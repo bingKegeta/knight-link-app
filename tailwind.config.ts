@@ -6,15 +6,58 @@ const config: Config = {
     "./components/**/*.{js,ts,jsx,tsx,mdx}",
     "./app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
-  theme: {
-    extend: {
-      backgroundImage: {
-        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "gradient-conic":
-          "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
+  // darkMode: "class",
+  theme: {},
+  daisyui: {
+    themes: [
+      {
+        latte: {
+          primary: "#8839ef",
+
+          secondary: "#ea76cb",
+
+          accent: "#179299",
+
+          neutral: "#bcc0cc",
+
+          "base-100": "#ccd0da",
+
+          info: "#209fb5",
+
+          success: "#40a02b",
+
+          warning: "#df8e1d",
+
+          error: "#d20f39",
+        },
+        mocha: {
+          primary: "#cba6f7",
+
+          secondary: "#f5c2e7",
+
+          accent: "#94e2d5",
+
+          neutral: "#181825",
+
+          "base-100": "#1e1e2e",
+
+          info: "#89b4fa",
+
+          success: "#a6e3a1",
+
+          warning: "#f9e2af",
+
+          error: "#f38ba8",
+        },
       },
-    },
+    ],
   },
-  plugins: [],
+  plugins: [
+    require("@catppuccin/tailwindcss")({
+      prefix: "ctp",
+      defaultFlavour: "mocha",
+    }),
+    require("daisyui"),
+  ],
 };
 export default config;
