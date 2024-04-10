@@ -64,7 +64,9 @@ const LoginPrompt = () => {
         <div className="form-control mt-6">
           <button className="btn btn-primary">Login</button>
         </div>
-        <div className="form-control"></div>
+        <Link href="/register" className="form-control">
+          Don&apos;t have an account yet? Click here to sign up!
+        </Link>
       </form>
     </>
   );
