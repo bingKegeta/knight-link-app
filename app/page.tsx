@@ -50,7 +50,7 @@ export default function Home() {
               Join your university, RSOs, and discover awesome events happening
               around you, none of which you&apos;ll ever visit.
             </p>
-            <Link href="/login">
+            <Link href="/register">
               <button className="btn btn-primary">
                 Sign up with your .edu email
               </button>
