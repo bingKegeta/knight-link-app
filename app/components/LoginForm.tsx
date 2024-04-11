@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import React from "react";
 import { useForm } from "react-hook-form";
 import LoginErrorAlert from "./LoginErrorAlert";
+import { debug } from "console";
 
 interface LoginProps {
   username: string;
@@ -19,7 +20,37 @@ export default function LoginForm() {
   } = useForm<LoginProps>();
 
   async function onSubmit(data: LoginProps) {
-    console.log(data);
+    debugger;
+    try {
+      const response = await fetch("http://localhost:8000/v1/api/auth/login", {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      });
+
+      if (!response.ok) {
+        throw new Error('Login request failed: ' + response.statusText);
+      }
+
+      // Extracting the token from the response
+      const tokenData = await response.json();
+      const token = tokenData.token;
+
+      if (!token) {
+        throw new Error('Token not received');
+      }
+      
+      localStorage.setItem('token', token);
+      console.log('Login successful, token:', token);
+    }
+
+    catch (ex) {
+      console.log(ex);
+      return;
+    }
+
     // const res = await fetch("/api/auth", {
     //   method: "POST",
     //   body: JSON.stringify(data),
@@ -92,7 +123,8 @@ export default function LoginForm() {
         <button className="btn btn-primary">Login</button>
       </div>
       <Link href="/register" className="form-control">
-        Don&apos;t have an account yet? Click here to sign up!
+        Don&apos;t have an account yet? 
+        Click here to sign up!
       </Link>
     </form>
   );

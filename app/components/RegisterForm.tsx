@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React from "react";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 
 interface RegisterInputs {
@@ -13,15 +13,23 @@ interface RegisterInputs {
 }
 
 export default function RegisterForm() {
+  const [isLoading, setIsLoading] = useState<boolean>();
+  
   const router = useRouter();
-  function onSubmit(data: RegisterInputs) {
-    const req = fetch("/api/users", {
-      method: "POST",
-      body: JSON.stringify(data),
-      headers: {
-        "content-type": "application/json",
-      },
-    }).catch((e) => console.log(e));
+  async function onSubmit(data: RegisterInputs) {
+    try {
+      const response = await fetch("/api/users", {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: {
+          "content-type": "application/json",
+        },
+      });
+    }
+    catch (error) {
+      console.error("Error creating the user" + error);
+    }
+
     router.push("/login");
   }
   const {
@@ -30,10 +38,10 @@ export default function RegisterForm() {
     formState: { errors },
   } = useForm<RegisterInputs>();
 
-  const styleFName = `input input-bordered w-full max-w-xs ${
+  const styleFName = `input input-bordered w-full ${
     errors.first_name ? "input-error" : ""
   }`;
-  const styleLName = `input input-bordered w-full max-w-xs ${
+  const styleLName = `input input-bordered w-full ${
     errors.last_name ? "input:error" : ""
   }`;
   const styleUsername = `input input-bordered flex items-center gap-2 ${
@@ -42,10 +50,11 @@ export default function RegisterForm() {
   const styleEmail = `input input-bordered flex items-center gap-2 ${
     errors.email ? "input-error" : ""
   }`;
+
   return (
+    // <span className="loading loading-spinner text-success"></span>
     <form className="card-body" onSubmit={handleSubmit(onSubmit)}>
       <div className="form-control">
-        <label className="form-control">
           <div className="label">
             <span className="label-text-alt">
               First Name <span className="text-error">*</span>
@@ -60,7 +69,6 @@ export default function RegisterForm() {
               pattern: /^[a-zA-Z]{1,50}$/,
             })}
           />
-        </label>
         {errors.first_name && (
           <span className={"label-text-alt text-error py-1"}>
             First name must only contain alphabet (a-z)
