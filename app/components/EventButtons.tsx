@@ -8,7 +8,7 @@ interface ContactProps {
 
 export const EventButtons = ({ phone, email }: ContactProps) => {
   return (
-    <div className="card-actions justify-end">
+    <div className="card-actions grid grid-cols-2 justify-between w-full">
       <button className="btn btn-primary">Join</button>
       <button
         className="btn btn-info btn-outline"
