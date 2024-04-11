@@ -39,12 +39,12 @@ export function RegisterFormContent({
   const { pending } = useFormStatus();
   
   return (
-    <>
+    <div className="">
         <span className={`loading loading-spinner text-success w-16 fixed top-2/4 left-2/4 -translate-x-1/2 
                         ${pending ? "opacity-100" : "opacity-0 backdrop-blur-sm transition-opacity"}`}></span>
 
-        <div className={`p-8 card
-                        card-normal bg-base-100 border-2 border-primary
+        <div className={`md:p-8 lg:card-normal p-4
+                        card-compact bg-base-100 border-2 border-primary
                         ${pending ? "opacity-0" : "opacity-100 backdrop-blur-sm transition-opacity"}
                         `}>
           <CloseBtn />
@@ -190,7 +190,7 @@ export function RegisterFormContent({
             </Link>
           </div>
         </div>
-    </>
+    </div>
   )
 }
 
@@ -259,8 +259,7 @@ export default function RegisterForm() {
 
   return (
     <div>
-      <form action={formAction} className="flex md:w-full md:h-full 
-                  w-1/2 h-1/2">
+      <form action={formAction} >
         <RegisterFormContent register={register} isValid={isValid} errors={errors} />
       </form>
       <div className={`transition-opacity duration-200 fixed bottom-0 right-0 m-4 ${alert.visible ? 'opacity-100' : 'opacity-0'}`}>

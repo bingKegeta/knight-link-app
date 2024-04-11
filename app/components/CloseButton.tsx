@@ -5,7 +5,7 @@ export default function CloseBtn() {
         <div className="card-actions w-full flex items-center justify-center relative">
             <h1 className="card-title">
             <Link href="/" className="absolute top-0 right-0">
-                <button className="btn btn-square btn-sm">
+                <div className="btn btn-square btn-sm">
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     className="h-6 w-6"
@@ -20,7 +20,7 @@ export default function CloseBtn() {
                     d="M6 18L18 6M6 6l12 12"
                     />
                 </svg>
-                </button>
+                </div>
             </Link>
             </h1>
         </div>
