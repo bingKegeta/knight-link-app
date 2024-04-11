@@ -1,10 +1,8 @@
 "use client";
-import { redirect } from "next/dist/server/api-utils";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React from "react";
 import { useForm } from "react-hook-form";
-import { json } from "stream/consumers";
 
 interface RegisterInputs {
   first_name: string;
