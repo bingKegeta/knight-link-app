@@ -3,7 +3,7 @@ import { EventButtons } from "./EventButtons";
 
 export default function EventCard(event: EventProps) {
   return (
-    <div className="card w-96 glass">
+    <div className="card w-96 glass bg-neutral">
       <div className="card-body">
         <h2 className="card-title">
           {event.name}{" "}
