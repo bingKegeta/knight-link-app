@@ -1,22 +1,69 @@
 "use client";
 import React, { useState } from "react";
+import { FdProps } from "../helpers/interfaces";
+import CommentCard from "./CommentCard";
+import CommentForm from "./CommentForm";
 
-interface ContactProps {
+interface EButtonProps {
+  E_name: string;
   phone: number;
   email: string;
 }
 
-export const EventButtons = ({ phone, email }: ContactProps) => {
+// for tests only
+const sampleData: FdProps[] = [
+  {
+    username: "user1",
+    type: "rating",
+    rating: 5,
+    timestamp: "2024-04-12T10:30:00Z",
+  },
+  {
+    username: "user2",
+    type: "comment",
+    content: "A shrimp fried this rice",
+    timestamp: "2024-04-11T15:20:00Z",
+  },
+  {
+    username: "user3",
+    type: "rating",
+    rating: 5,
+    timestamp: "2024-04-10T09:45:00Z",
+  },
+  {
+    username: "user4",
+    type: "comment",
+    content: "Wood fired pizza???",
+    timestamp: "2024-04-09T20:10:00Z",
+  },
+  {
+    username: "user5",
+    type: "rating",
+    rating: 3,
+    timestamp: "2024-04-08T14:00:00Z",
+  },
+];
+export const EventButtons = ({ E_name, phone, email }: EButtonProps) => {
+  const contactModalId = `contact-${E_name}`;
+  const commentModalId = `comment-${E_name}`;
   return (
-    <div className="card-actions grid grid-cols-2 justify-between w-full">
-      <button className="btn btn-primary">Join</button>
-      <button
-        className="btn btn-info btn-outline"
-        onClick={() => document.getElementById("contact").showModal()}
-      >
-        Contact
-      </button>
-      <dialog id="contact" className="modal">
+    <>
+      <div className="card-actions grid grid-cols-3 justify-between w-full">
+        <button className="btn btn-primary">Join</button>
+        <button
+          className="btn btn-info btn-outline"
+          onClick={() => document.getElementById(contactModalId).showModal()}
+        >
+          Contact
+        </button>
+        <button
+          className="btn btn-success btn-outline"
+          onClick={() => document.getElementById(commentModalId).showModal()}
+        >
+          Comment
+        </button>
+      </div>
+      <dialog id={contactModalId} className="modal">
         <div className="modal-box">
           <h3 className="font-bold text-lg">Contact Information</h3>
           <p className="py-4">
@@ -54,6 +101,27 @@ export const EventButtons = ({ phone, email }: ContactProps) => {
           <button>close</button>
         </form>
       </dialog>
-    </div>
+      <dialog id={commentModalId} className="modal">
+        <div className="modal-box bg-neutral">
+          <form method="dialog">
+            {/* if there is a button in form, it will close the modal */}
+            <button className="btn btn-sm btn-circle btn-ghost absolute right-2 top-2">
+              ✕
+            </button>
+          </form>
+          <h3 className="font-bold text-lg m-4">Comments for {E_name}</h3>
+          <div className="flex flex-col justify-stretch">
+            <div className="card-body bg-base-300 rounded-box join-item border-2 rounded-b-none">
+              {sampleData.map((fb) => (
+                <CommentCard key={E_name + fb.username} {...fb} />
+              ))}
+            </div>
+            <section className="join-item">
+              <CommentForm />
+            </section>
+          </div>
+        </div>
+      </dialog>
+    </>
   );
 };

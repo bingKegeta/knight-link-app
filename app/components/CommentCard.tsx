@@ -10,7 +10,7 @@ export default function CommentCard(data: FdProps) {
         {data.type === "comment" || !data.rating ? (
           data.content
         ) : (
-          <UserRating rating={data.rating} />
+          <UserRating name={data.username} rating={data.rating} />
         )}
       </div>
 

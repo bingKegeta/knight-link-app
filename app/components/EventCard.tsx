@@ -133,7 +133,11 @@ export default function EventCard(event: EventProps) {
             </div>
           </div>
         </div>
-        <EventButtons phone={event.phone} email={event.email} />
+        <EventButtons
+          E_name={event.name}
+          phone={event.phone}
+          email={event.email}
+        />
       </div>
     </div>
   );
