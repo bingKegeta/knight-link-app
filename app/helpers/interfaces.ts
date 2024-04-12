@@ -30,7 +30,6 @@ export interface UniProps {
   description: string;
   student_count?: number;
   //user_is_part: boolean
-  picture?: string; //! Need to manage this
 }
 
 export interface FdProps {
