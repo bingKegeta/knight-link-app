@@ -1,9 +1,9 @@
-"use client";
+'use client';
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import { FieldErrors, UseFormRegister, useForm } from "react-hook-form";
 import { useFormState, useFormStatus } from "react-dom";
-import { RegisterUser, State } from "./server/actions";
+import { GetUniversities, RegisterUser, State } from "./server/actions";
 import CloseBtn from "./CloseButton";
 
 interface RegisterInputs {
@@ -12,15 +12,16 @@ interface RegisterInputs {
   username: string;
   email: string;
   password: string;
+  university: string;
 }
 
-// test array, use a function in server actions to get the array of unis to list here
-const unis: string[] = [
-  "Man University",
-  "Woman University",
-  "Child Univerisity",
-  "University of Central Florida",
-];
+
+interface Univerisity {
+  uni_name: string;
+  uni_description: string;
+  student_no: number;
+}
+
 
 export function RegisterFormContent({
   register,
@@ -44,6 +45,17 @@ export function RegisterFormContent({
     errors.email ? "input-error" : ""
   }`;
 
+  const [universities, setUniversities] = useState<Univerisity[]>([]);
+
+  useEffect(() => {
+    const fetchUniversities = async () => {
+      const uniList : Univerisity[] = await GetUniversities();
+      setUniversities(uniList);
+    };
+
+    fetchUniversities();
+  }, []);
+  
   const { pending } = useFormStatus();
 
   return (
@@ -204,14 +216,15 @@ export function RegisterFormContent({
                   University <span className="text-error">*</span>
                 </span>
               </div>
-              <select className="select select-bordered">
-                <option disabled selected>
-                  Pick one
+              <select className="select select-bordered" {...register("university")} defaultValue={"Pick one"}>
+                <option disabled>
+                    Pick one
                 </option>
-                {unis.map((uni) => (
-                  <option key={uni}>{uni}</option>
+                {universities.map((uni, index) => (
+                  <option key={index} value={uni.uni_name}>{uni.uni_name}</option>
                 ))}
               </select>
+
             </label>
           </div>
           <div className="form-control mt-6">
@@ -308,6 +321,8 @@ export default function RegisterForm() {
     formState: { isValid, errors },
   } = useForm<RegisterInputs>();
 
+
+  
   const [state, formAction] = useFormState<State, FormData>(RegisterUser, null);
   const [alert, setAlert] = useState<{
     visible: boolean;
