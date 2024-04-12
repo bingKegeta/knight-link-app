@@ -70,7 +70,7 @@ export function RegisterFormContent({
       ></span>
 
       <div
-        className={`md:p-8 lg:card-normal p-4
+        className={`md:p-8 lg:card-normal p-4 card
                         card-compact bg-base-100 border-2 border-primary
                         ${
                           pending
@@ -231,7 +231,7 @@ export function RegisterFormContent({
             <button
               className="btn btn-primary"
               type="submit"
-              disabled={pending || !isValid}
+              disabled={!isValid}
             >
               Login
             </button>
