@@ -231,7 +231,7 @@ export function RegisterFormContent({
             <button
               className="btn btn-primary"
               type="submit"
-              disabled={pending || !isValid}
+              disabled={!isValid}
             >
               Login
             </button>

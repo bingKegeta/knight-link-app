@@ -1,10 +1,11 @@
 import React from "react";
 import EventCard from "../components/EventCard";
 import { EventProps } from "../helpers/interfaces";
-import CreateEventForm from "../components/CreateEventForm";
+import CreateLocationForm from "../components/CreateLocationForm";
 
-export default function Event() {
+
+export default function Location() {
   return (
-    <CreateEventForm />
+    <CreateLocationForm />
   )
 }
