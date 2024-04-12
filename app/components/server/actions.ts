@@ -1,12 +1,22 @@
 'use server'
 
+interface UniversitiesRes {
+  data : Univerisity[]
+  status: string
+}
+
+interface Univerisity {
+  uni_name: string;
+  uni_description: string;
+  student_no: number;
+}
+
 export type State =
   | {
       status: string;
       message: string;
     }
   | null;
-
 
 export async function RegisterUser(prevState: State | null, formData: FormData): Promise<State> {
     try {
@@ -102,5 +112,31 @@ export async function LoginUser(prevState: State | null, formData: FormData): Pr
         status: "error",
         message: `Login failed: ${error.message || error}`
     };
+  }
+}
+
+export async function GetUniversities(): Promise<Univerisity[]>  {
+
+  try {
+    const response = await fetch("http://localhost:8000/v1/api/unis", {
+      method: "GET",
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+    
+    const res : UniversitiesRes = await response.json()
+
+    if (res.status === "success") {
+      return res.data; 
+    } 
+    else {
+      console.log("Failed to fetch universities:", res.status);
+      return [];
+    }
+  }
+  catch (error : any) {
+    console.error("Error fetching universities:", error.message);
+    return []
   }
 }
