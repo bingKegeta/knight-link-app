@@ -32,3 +32,11 @@ export interface UniProps {
   //user_is_part: boolean
   picture?: string; //! Need to manage this
 }
+
+export interface FdProps {
+  username: string;
+  type: "rating" | "comment";
+  content?: string;
+  rating?: 1 | 2 | 3 | 4 | 5;
+  timestamp: string;
+}
