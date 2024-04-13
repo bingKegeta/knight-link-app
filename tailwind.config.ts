@@ -73,9 +73,9 @@ const config: Config = {
         //   warning: "#f9e2af",
         //   error: "#f38ba8",
         // },
-      },      
+      },
       "synthwave",
-      "cyberpunk",
+      "dracula",
     ],
   },
   plugins: [

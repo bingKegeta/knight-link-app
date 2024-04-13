@@ -1,8 +1,4 @@
-import Image from "next/image";
 import Link from "next/link";
-import LoginPage from "./login/page";
-import RegisterPrompt from "./components/RegisterPrompt";
-import LoginPrompt from "./components/LoginPrompt";
 
 export default function Home() {
   return (
@@ -14,7 +10,7 @@ export default function Home() {
             "url(https://i.pinimg.com/originals/e9/8d/5a/e98d5a5788893b9846455e946e058936.jpg)",
         }}
       >
-        <div className="hero-overlay bg-opacity-60 backdrop-blur-md"></div>
+        <div className="hero-overlay glass"></div>
         <label className="swap swap-rotate bg-base-100 rounded-full absolute top-4 right-8">
           {/* this hidden checkbox controls the state */}
           <input

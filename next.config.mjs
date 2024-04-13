@@ -10,6 +10,14 @@ const nextConfig = {
       },
     ];
   },
+  async rewrites() {
+    return [
+      {
+        source: "/api/events/feedback",
+        destination: "http://localhost:8000/v1/api/events/feedback",
+      },
+    ];
+  },
 };
 
 export default nextConfig;
