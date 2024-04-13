@@ -4,7 +4,7 @@ import { useFormState, useFormStatus } from "react-dom";
 import { FieldErrors, useForm, UseFormRegister } from "react-hook-form";
 import CloseBtn from "./CloseButton";
 import { register } from "module";
-import { ApplyRSO } from "./server/actions";
+import { ApplyRSO, GetStudents, State } from "./server/actions";
 
 interface RSOFormInput {
   rso_name: string;
@@ -16,6 +16,7 @@ interface RSOFormInput {
   promotion_value: 1 | 2 | 3 | 4; // this one is for getting which student was promoted
   am_name: string;
 }
+
 export function RSOFormContent({
   register,
   isValid,
@@ -32,16 +33,29 @@ export function RSOFormContent({
     errors.am_name ? "input-error" : ""
   }`;
 
-  const [students, setStudents] = useState<String[]>();
+  const [students, setStudents] = useState<string[]>([]);
+  // Hashmap to keep track of the selected students and dynamically update the options
+  const [selectedStudents, setSelectedStudents] = useState<Record<string, string>>({});
 
   useEffect(() => {
     const fetchStudents = async () => {
-      const stdList: String[] = await GetStudents();
+      const stdList: string[] = await GetStudents();
       setStudents(stdList);
     };
 
     fetchStudents();
   }, []);
+
+  const handleSelectStudent = (student: string, key: string) => {
+    setSelectedStudents(prev => ({
+      ...prev,
+      [key]: student
+    }));
+  };
+
+  const filteredStudents = (key: string) => {
+    return students.filter(stu => !Object.values(selectedStudents).includes(stu) || selectedStudents[key] === stu);
+  };
 
   const { pending } = useFormStatus();
   return (
@@ -105,123 +119,55 @@ export function RSOFormContent({
           </div>
           <div className="grid grid-cols-2">
             <div className="form-control">
-              <label className="form-control w-full">
+            {['s1_name', 's2_name', 's3_name', 's4_name'].map((key, index) => (
+              <label key={key} className="form-control w-full">
                 <div className="label">
                   <span className="label-text-alt">
-                    Student 1 <span className="text-error">*</span>
+                    Student {index + 1} <span className="text-error">*</span>
                   </span>
                 </div>
                 <select
                   className="select select-bordered"
-                  {...register("s1_name")}
-                  defaultValue={"Choose one"}
+                  {...register(key)}
+                  value={selectedStudents[key] || "Choose one"}
+                  onChange={e => handleSelectStudent(e.target.value, key)}
                 >
-                  <option disabled>Choose one</option>
-                  {/*! Option Map Here */}
-                  <option value={1}>Student 1</option>
-                  <option value={2}>Student 2</option>
-                  <option value={3}>Student 3</option>
-                  <option value={4}>Student 4</option>
+                  <option disabled value="Choose one">Choose one</option>
+                  {filteredStudents(key).map(name => (
+                    <option key={name} value={name}>{name}</option>
+                  ))}
                 </select>
               </label>
-              <label className="form-control w-full">
-                <div className="label">
-                  <span className="label-text-alt">
-                    Student 2 <span className="text-error">*</span>
-                  </span>
-                </div>
-                <select
-                  className="select select-bordered"
-                  {...register("s2_name")}
-                  defaultValue={"Choose one"}
-                >
-                  <option disabled>Choose one</option>
-                  {/*! Option Map Here */}
-                  <option value={1}>Student 1</option>
-                  <option value={2}>Student 2</option>
-                  <option value={3}>Student 3</option>
-                  <option value={4}>Student 4</option>
-                </select>
-              </label>
-              <label className="form-control w-full">
-                <div className="label">
-                  <span className="label-text-alt">
-                    Student 3 <span className="text-error">*</span>
-                  </span>
-                </div>
-                <select
-                  className="select select-bordered"
-                  {...register("s3_name")}
-                  defaultValue={"Choose one"}
-                >
-                  <option disabled>Choose one</option>
-                  {/*! Option Map Here */}
-                  <option value={1}>Student 1</option>
-                  <option value={2}>Student 2</option>
-                  <option value={3}>Student 3</option>
-                  <option value={4}>Student 4</option>
-                </select>
-              </label>
-              <label className="form-control w-full">
-                <div className="label">
-                  <span className="label-text-alt">
-                    Student 4 <span className="text-error">*</span>
-                  </span>
-                </div>
-                <select
-                  className="select select-bordered"
-                  {...register("s4_name")}
-                  defaultValue={"Choose one"}
-                >
-                  <option disabled>Choose one</option>
-                  {/*! Option Map Here */}
-                  <option value={1}>Student 1</option>
-                  <option value={2}>Student 2</option>
-                  <option value={3}>Student 3</option>
-                  <option value={4}>Student 4</option>
-                </select>
-              </label>
+            ))}
             </div>
             <div className="form-control">
-              <label className="label cursor-pointer">
-                <span className="label-text-alt">Admin</span>
-                <input type="checkbox" className="checkbox" />
-              </label>
-              <label className="label cursor-pointer">
-                <span className="label-text">Admin</span>
-                <input type="checkbox" className="checkbox" />
-              </label>
-              <label className="label cursor-pointer">
-                <span className="label-text">Admin</span>
-                <input type="checkbox" className="checkbox" />
-              </label>
-              <label className="label cursor-pointer">
-                <span className="label-text">Admin</span>
-                <input type="checkbox" className="checkbox" />
-              </label>
-            </div>
-          </div>
-          <div className="form-control">
             <div className="label">
-              <span className="label-text-alt">
-                Admin Name (You) <span className="text-error">*</span>
-              </span>
+              <span className="label-text-alt">Promote a student:</span>
             </div>
-            <input
-              type="text"
+            {['s1_name', 's2_name', 's3_name', 's4_name'].map((field, index) => (
+              <label key={field} className="label cursor-pointer">
+                <span className="label-text">{`Student ${index + 1}`}</span>
+                <input
+                  type="radio"
+                  value={index + 1}
+                  {...register("promotion_value")}
+                  className="radio"
+                />
+              </label>
+            ))}
+          </div>
+
+          </div>
+          <input
+              type="hidden"
               placeholder="Man"
               className={styleAdmin}
               {...register("am_name", {
-                required: true,
+                required: false,
                 pattern: /^[a-zA-Z]{1,50}$/,
               })}
+              value={""}
             />
-            {errors.rso_name && (
-              <span className={"label-text-alt text-error py-1"}>
-                Add your username
-              </span>
-            )}
-          </div>
           <div className="form-control mt-6">
             <button
               className="btn btn-primary"

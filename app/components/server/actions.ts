@@ -2,6 +2,10 @@
 
 import { cookies } from "next/headers";
 
+interface StudentsRes {
+  data: string[];
+  status: string;
+}
 interface UniversitiesRes {
   data: Univerisity[];
   status: string;
@@ -463,14 +467,29 @@ export async function ApplyRSO(
   prevState: State | null,
   formData: FormData
 ): Promise<State> {
-  "use server";
+  'use server';
   try {
     const data: Partial<Record<string, string>> = {};
 
     formData.forEach((value, key) => {
-      data[key] = value.toString();
+      if (key.charAt(0) !== "$") {
+        data[key] = value.toString();
+      }
     });
 
+    // the hidden input we will give it the current username from the cookie
+    const cookieStore = cookies();
+    const username = cookieStore.get('username')
+
+    if (username?.value === "") {
+      return {
+        status: "success",
+        message: "Error trying to access the cookies. Login again"
+      };
+    }
+
+    data['am_name'] = username?.value;
+      
     const response = await fetch("http://localhost:8000/v1/api/rsos", {
       method: "POST",
       body: JSON.stringify(data),
@@ -508,5 +527,33 @@ export async function ApplyRSO(
       status: "error",
       message: `Error Creating the RSO Application: ${error.message || error}`,
     };
+  }
+}
+
+export async function GetStudents() {
+  "use server";
+  try {
+    const cookieStore = cookies();
+    const auth = cookieStore.get("authToken");
+
+    const response = await fetch("http://localhost:8000/v1/api/users/get_students", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "Bearer " + auth?.value,
+      },
+    });
+
+    const res: StudentsRes = await response.json();
+
+    if (res.status === "success") {
+      return res.data;
+    } else {
+      console.log("Failed to fetch events:", res.status);
+      return [];
+    }
+  } catch (error: any) {
+    console.error("Error fetching events:", error.message);
+    return [];
   }
 }
