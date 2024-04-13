@@ -3,13 +3,18 @@
 import { cookies } from "next/headers";
 
 interface UniversitiesRes {
-  data : Univerisity[]
-  status: string
+  data : Univerisity[];
+  status: string;
 }
 
 interface RSOsRes {
-  data : string[]
-  status: string
+  data : string[];
+  status: string;
+}
+
+interface EventsRes {
+  data: DbEventInputs[];
+  status: string;
 }
 
 interface Univerisity {
@@ -19,14 +24,31 @@ interface Univerisity {
 }
 
 interface LocationRes {
-  data : Location[]
-  status: string
+  data : Location[];
+  status: string;
 }
 
 interface Location {
   address: string;
   latitude: string;
   longitude: string;
+}
+
+export interface DbEventInputs {
+  event_name: string;
+  event_description: EventDescription;
+  start_time: string;
+  end_time: string;
+  loc_name: string;
+  contact_email: string;
+  visibility: string;
+  uni_name: string
+  rso_name : string
+}
+
+export interface EventDescription {
+  String: string
+  Valid: boolean
 }
 
 export type State =
@@ -120,11 +142,21 @@ export async function LoginUser(prevState: State | null, formData: FormData): Pr
           message: `Login failed: ${errorMessage}`
       };
     }
-    const tokenCookie = response.headers.get("Set-Cookie");
-    const tokenValuePair = tokenCookie !== null ? tokenCookie.split(';')[0] : null;
-    const token = tokenValuePair ? tokenValuePair.split('=')[1] : null;
+    const cookieHeader = response.headers.get("Set-Cookie");
 
-    cookieStore.set('authToken', token || "")
+    if (cookieHeader) {
+      const usernameRegex = /username=([^;]+)/;
+      const usernameMatch = cookieHeader.match(usernameRegex);
+      const username = usernameMatch ? usernameMatch[1] : null;
+      
+      // Regex to find the token value
+      const tokenRegex = /token=([^;]+)/;
+      const tokenMatch = cookieHeader.match(tokenRegex);
+      const token = tokenMatch ? tokenMatch[1] : null;
+
+      cookieStore.set('authToken', token || "")
+      cookieStore.set('username', username || "")
+    }
 
     return {
       status: "success",
@@ -192,7 +224,6 @@ export async function GetRsos(): Promise<string[]>  {
   }
 }
 
-
 export async function GetLocations(): Promise<Location[]>  {
   'use server'
   try {
@@ -219,6 +250,38 @@ export async function GetLocations(): Promise<Location[]>  {
     return []
   }
 }
+
+export async function GetEvents(): Promise<DbEventInputs[]>  {
+  'use server'
+  try {
+    const cookieStore = cookies();
+    const auth = cookieStore.get('authToken')
+
+    const response = await fetch("http://localhost:8000/v1/api/events", {
+      method: "GET",
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + auth?.value
+      },
+    });
+
+    const res : EventsRes = await response.json()
+
+    if (res.status === "success") {
+      return res.data; 
+    } 
+
+    else {
+      console.log("Failed to fetch events:", res.status);
+      return [];
+    }
+  }
+  catch (error : any) {
+    console.error("Error fetching events:", error.message);
+    return []
+  }
+}
+
 export async function CreateEvent(prevState: State | null, formData: FormData): Promise<State> {
   'use server'
   try {
@@ -274,6 +337,63 @@ export async function CreateEvent(prevState: State | null, formData: FormData): 
 }
 
 export async function CreateLocation(prevState: State | null, formData: FormData): Promise<State> {
+  'use server'
+  try {
+    const data: Partial<Record<string, string>> = {};
+    
+    formData.forEach((value, key) => { 
+      if (key.charAt(0) !== "$"){
+        data[key] = value.toString();
+      }
+    });
+    
+    const raw = JSON.stringify({
+      "address": data["address"],
+      "latitude": data["coordinates.latitude"],
+      "longitude": data["coordinates.longitude"]
+    });
+    
+    const response = await fetch("http://localhost:8000/v1/api/locations/create", {
+      method: "POST",
+      body: raw,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
+    const responseText = await response.text();
+
+    let responseBody;
+
+    try {
+      responseBody = JSON.parse(responseText);
+    } catch (e) {
+      responseBody = responseText;
+    }
+    
+    if (!response.ok) {
+      const errorMessage = typeof responseBody === 'object' ? responseBody.message : responseBody;
+      return {
+          status: "warning",
+          message: `Creation failed: ${errorMessage}`
+      };
+    }
+
+    return {
+      status: "success",
+      message: typeof responseBody === 'object' ? responseBody.message : responseBody
+    };
+  }
+
+  catch (error : any) {
+      return {
+        status: "error",
+        message: `Creation failed: ${error.message || error}`
+    };
+  }
+}
+
+export async function CreateFeedback(prevState: State | null, formData: FormData): Promise<State> {
   'use server'
   try {
     const data: Partial<Record<string, string>> = {};

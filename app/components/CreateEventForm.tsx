@@ -96,7 +96,7 @@ function alertCreation(state: State) {
     }
   
     return alertComponent;
-  }
+}
 
 export function CreateEventFormContent({
     register,

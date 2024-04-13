@@ -1,19 +1,19 @@
-import { EventProps } from "../helpers/interfaces";
 import { EventButtons } from "./EventButtons";
+import { DbEventInputs } from "./server/actions";
 
-export default function EventCard(event: EventProps) {
+export default function EventCard(event: DbEventInputs) {
   return (
-    <div className="card w-96 glass bg-neutral">
+    <div className="card md:w-96 w-80 glass bg-neutral">
       <div className="card-body">
         <h2 className="card-title">
-          {event.name}{" "}
+          {event.event_name}{" "}
           <a
             className="tooltip tooltip-primary tooltip-right"
             data-tip={
               event.visibility === "private"
-                ? event.uni
+                ? event.uni_name
                 : event.visibility === "rso"
-                ? event.rso
+                ? event.rso_name
                 : "public"
             }
           >
@@ -113,28 +113,28 @@ export default function EventCard(event: EventProps) {
           </a>
         </h2>
         <div className="card-actions justify-start">
-          {event.tags.map((text) => (
+          {/* {event.tags.map((text) => (
             <p key={text} className="badge badge-accent badge-outline">
               {text}
             </p>
-          ))}
+          ))} */}
         </div>
         <div className="rounded-btn bg-neutral p-2 justify-start">
-          <p className="py-4">{event.description}</p>
+          <p className="py-4">{event.event_description.String}</p>
           {/* Map embed should be here */}
           <div className="grid grid-cols-2 w-full">
             <div className="flex flex-col bg-base-100 rounded-box m-2 p-2 border-success border-2">
               <p className="">Starts:</p>
-              <p className="">{event.start}</p>
+              <p className="">{event.start_time}</p>
             </div>
             <div className="flex flex-col bg-base-100 rounded-box m-2 p-2 border-error border-2">
               <p className="">Ends:</p>
-              <p className="">{event.end}</p>
+              <p className="">{event.end_time}</p>
             </div>
           </div>
         </div>
         <EventButtons
-          E_name={event.name}
+          E_name={event.event_name}
           phone={event.phone}
           email={event.email}
         />

@@ -52,13 +52,23 @@ export const EventButtons = ({ E_name, phone, email }: EButtonProps) => {
         <button className="btn btn-primary">Join</button>
         <button
           className="btn btn-info btn-outline"
-          onClick={() => document.getElementById(contactModalId).showModal()}
+          onClick={() => {
+            const contactModal = document.getElementById(contactModalId) as HTMLDialogElement;
+            if (contactModal) {
+              contactModal.showModal();
+            }
+          }}
         >
           Contact
         </button>
         <button
           className="btn btn-success btn-outline"
-          onClick={() => document.getElementById(commentModalId).showModal()}
+          onClick={() => {
+            const commentModal = document.getElementById(commentModalId) as HTMLDialogElement;;
+            if (commentModal) {
+              commentModal.showModal();
+            }
+          }}
         >
           Comment
         </button>

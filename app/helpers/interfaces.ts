@@ -12,6 +12,43 @@ export interface EventProps {
   uni?: string;
 }
 
+export interface EventInputs {
+  event_name: string;
+  event_description: string;
+  start_time: string;
+  end_time: string;
+  loc_name: string;
+  contact_email: string;
+  visibility: string;
+  uni_name: string
+  rso_name : string
+}
+
+export interface DbEventInputs {
+  event_name: string;
+  event_description: EventDescription;
+  start_time: string;
+  end_time: string;
+  loc_name: string;
+  contact_email: string;
+  visibility: string;
+  uni_name: string
+  rso_name : string
+}
+
+export interface FeedbackForm {
+  comment: string;
+  username: string;
+  rating: number;
+  timestamp: string;
+  feedback_type: string;
+}
+
+export interface EventDescription {
+  String: string
+  Valid: boolean
+}
+
 export interface LoginProps {
   username: string;
   password: string;
