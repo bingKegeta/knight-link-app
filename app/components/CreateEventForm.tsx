@@ -1,7 +1,7 @@
 'use client'
 import { useEffect, useState } from "react";
 import { useFormState, useFormStatus } from "react-dom";
-import { CreateEvent, GetLocations, GetRsos, GetUniversities, State } from "./server/actions";
+import { CreateEvent, DbRso, GetLocations, GetRsos, GetUniversities, State } from "./server/actions";
 import { FieldErrors, UseFormRegister, useForm } from "react-hook-form";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
@@ -127,8 +127,12 @@ export function CreateEventFormContent({
         };
         
         const fetchRsos = async () => {
-            const rsoList : string[] = await GetRsos();
-            setRsos(rsoList);
+            const rsoList : DbRso[] = await GetRsos();
+            const rsoNames : string[] = []
+            rsoList.forEach(rsoName => {
+              rsoNames.push(rsoName.rso_name)
+            })
+            setRsos(rsoNames);
         };
 
         fetchUniversities();

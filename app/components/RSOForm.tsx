@@ -4,7 +4,7 @@ import { useFormState, useFormStatus } from "react-dom";
 import { FieldErrors, useForm, UseFormRegister } from "react-hook-form";
 import CloseBtn from "./CloseButton";
 import { register } from "module";
-import { ApplyRSO, GetStudents, State } from "./server/actions";
+import { CreateRso, GetStudents, State } from "./server/actions";
 
 interface RSOFormInput {
   rso_name: string;
@@ -189,7 +189,7 @@ export default function RSOForm() {
     formState: { isValid, errors },
   } = useForm<RSOFormInput>();
 
-  const [state, formAction] = useFormState<State, FormData>(ApplyRSO, null);
+  const [state, formAction] = useFormState<State, FormData>(CreateRso, null);
   const [alert, setAlert] = useState<{
     visible: boolean;
     content: React.JSX.Element | null;
