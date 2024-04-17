@@ -6,6 +6,7 @@ import { useFormState, useFormStatus } from "react-dom";
 import { LoginUser, State } from "./server/actions";
 import CloseBtn from "./CloseButton";
 import alertCreation from "./AlertCreation";
+import { useRouter } from "next/navigation";
 
 interface LoginInputs {
   username: string;
@@ -124,12 +125,16 @@ export default function LoginForm() {
 
   const [state, formAction] = useFormState<State, FormData>(LoginUser, null);
   const [alert, setAlert] = useState<{ visible: boolean, content: React.JSX.Element | null }>({ visible: false, content: null });
-
+  const router = useRouter();
 
   useEffect(() => {
     if (state) {
+      if (state.status === "success") {
+        router.push("/home");
+      }
+
       setAlert({ visible: true, content: alertCreation(state) });
-    
+      
       const fadeOutTimer = setTimeout(() => {
         setAlert(prevState => ({ ...prevState, visible: false }));
       }, 5000);

@@ -1,15 +1,21 @@
-import type { NextRequest } from "next/server";
+import { NextResponse, type NextRequest } from "next/server";
+import { CheckPermissions } from "./app/components/server/actions";
 
 export function middleware(request: NextRequest) {
   const currentUser = request.cookies.get("username")?.value;
   const { pathname } = request.nextUrl;
+  const userRole = request.cookies.get('role')?.value || "";
 
   if (pathname === "/") {
     return;
   }
-
+  
+  if ((userRole !== 'admin' && userRole !== "superadmin") && pathname.startsWith('/create')) {
+    return NextResponse.rewrite(new URL('/404', request.url)); 
+  }
+  
   // Redirect logged-in users to /home if they're not already there
-  if (currentUser && pathname === "/login") {
+  if ((currentUser && pathname === "/login") || (currentUser && pathname === "/") || (currentUser && pathname === "/register")) {
     return Response.redirect(new URL("/home", request.url));
   }
 
@@ -17,6 +23,7 @@ export function middleware(request: NextRequest) {
   if (!currentUser && pathname !== "/login" && pathname !== "/register") {
     return Response.redirect(new URL("/login", request.url));
   }
+
 }
 
 export const config = {

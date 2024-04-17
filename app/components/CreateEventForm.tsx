@@ -1,11 +1,12 @@
 'use client'
 import { useEffect, useState } from "react";
 import { useFormState, useFormStatus } from "react-dom";
-import { CreateEvent, DbRso, GetLocations, GetRsos, GetUniversities, State } from "./server/actions";
+import { CheckPermissions, CreateEvent, DbRso, GetLocations, GetRsos, GetUniversities, State } from "./server/actions";
 import { FieldErrors, UseFormRegister, useForm } from "react-hook-form";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { start } from "repl";
+import { useRouter } from "next/navigation";
 
 interface EventInputs {
     event_name: string;
@@ -329,7 +330,7 @@ export default function CreateEventForm() {
 
     const [state, formAction] = useFormState<State, FormData>(CreateEvent, null);
     const [alert, setAlert] = useState<{ visible: boolean, content: React.JSX.Element | null }>({ visible: false, content: null });
-    
+
     useEffect(() => {
         if (state) {
           setAlert({ visible: true, content: alertCreation(state) });

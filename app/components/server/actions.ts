@@ -188,6 +188,11 @@ export async function LoginUser(
 
       cookieStore.set("authToken", token || "");
       cookieStore.set("username", username || "");
+
+      let permissions = await CheckPermissions();
+
+      cookieStore.set("role", permissions)
+
     }
 
     return {
@@ -412,6 +417,7 @@ export async function LeaveEvent(data: EventJoinData): Promise<State> {
     };
   }
 }
+
 export async function GetLocations(): Promise<Location[]> {
   "use server";
   try {
@@ -436,17 +442,51 @@ export async function GetLocations(): Promise<Location[]> {
   }
 }
 
+export async function LogOut() {
+  const cookieStore = cookies();
+
+  cookieStore.delete("authToken");
+  cookieStore.delete("username");
+
+}
+
+export async function CheckPermissions(): Promise<string> {
+  "use server";
+  try {
+    const cookieStore = cookies();
+
+    const username = cookieStore.get("username");
+    const response = await fetch(`http://localhost:8000/v1/api/auth/permissions?username=${username?.value}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const res: State = await response.json();
+
+    if (res?.status === "success") {
+      return res?.message;
+    } else {
+      console.log("Failed to fetch events:", res?.status);
+      return "error";
+    }
+  } catch (error: any) {
+    console.error("Error fetching events:", error.message);
+    return "error";
+  }
+}
+
 export async function GetEvents(): Promise<DbEventInputs[]> {
   "use server";
   try {
     const cookieStore = cookies();
-    const auth = cookieStore.get("authToken");
 
-    const response = await fetch("http://localhost:8000/v1/api/events", {
+    const username = cookieStore.get("username");
+    const response = await fetch(`http://localhost:8000/v1/api/events?username=${username?.value}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: "Bearer " + auth?.value,
       },
     });
 
@@ -470,7 +510,7 @@ export async function GetUserEvents(): Promise<DbEventInputs[]> {
     const cookieStore = cookies();
     const username = cookieStore.get("username");
 
-    const response = await fetch(`http://localhost:8000/v1/api/events?username=${username?.value}`, {
+    const response = await fetch(`http://localhost:8000/v1/api/events/user?username=${username?.value}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

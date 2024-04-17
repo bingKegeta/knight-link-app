@@ -28,7 +28,7 @@ export function EventCarouselContent() {
   return (
     <section className="max-w-sm sm:max-w-screen-md lg:max-w-screen-lg 2xl:max-w-screen-2xl w-80 space-x-4 m-4 p-4 md:w-full carousel carousel-center items-center
                       bg-neutral rounded-box border-2 border-success">
-          {events.map((item, index) => (
+          {events && events?.map((item, index) => (
             <div className="mx-4 justify-center" key={index}>
               <EventCard {...item} />
             </div>

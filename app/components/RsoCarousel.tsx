@@ -1,8 +1,5 @@
 'use client'
 import React, { useEffect, useState } from "react";
-import { DbEventInputs, EventInputs } from "../helpers/interfaces";
-import { GetStaticProps, InferGetStaticPropsType } from "next";
-import EventCard from "./EventCard";
 import { DbRso, GetRsos, State } from "./server/actions";
 import RsoCard from "./RsoCard";
 import alertCreation from "./AlertCreation";

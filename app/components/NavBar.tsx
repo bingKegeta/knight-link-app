@@ -1,7 +1,17 @@
+'use client'
 import Link from "next/link";
 import React from "react";
+import { LogOut } from "./server/actions";
+import { useRouter } from "next/navigation";
 
 export default function NavBar() {
+  const router = useRouter();
+
+  const handleLogout = () => {
+    LogOut();
+    router.push("/");
+  }
+
   return (
     <div className="border-2 border-info rounded-box my-[1%] ml-[1%] w-[98%]">
       <div className="navbar glass rounded-box bg-neutral lg:justify-between justify-between">
@@ -103,10 +113,7 @@ export default function NavBar() {
                 </summary>
                 <ul className="bg-neutral rounded-t-none border-2 border-info border-t-0">
                   <li>
-                    <a>Profile</a>
-                  </li>
-                  <li>
-                    <a>Logout</a>
+                    <button onClick={() => {handleLogout()}}>Logout</button>
                   </li>
                 </ul>
               </details>

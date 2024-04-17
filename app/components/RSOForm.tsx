@@ -4,7 +4,8 @@ import { useFormState, useFormStatus } from "react-dom";
 import { FieldErrors, useForm, UseFormRegister } from "react-hook-form";
 import CloseBtn from "./CloseButton";
 import { register } from "module";
-import { CreateRso, GetStudents, State } from "./server/actions";
+import { CheckPermissions, CreateRso, GetStudents, State } from "./server/actions";
+import { useRouter } from "next/navigation";
 
 interface RSOFormInput {
   rso_name: string;
@@ -195,9 +196,6 @@ export default function RSOForm() {
     content: React.JSX.Element | null;
   }>({ visible: false, content: null });
 
-  useEffect(() => {
-    // do alert stuff
-  }, [state]);
 
   return (
     <div>
