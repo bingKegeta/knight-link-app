@@ -73,7 +73,7 @@ export default function NavBar() {
                 </summary>
                 <ul className="p-2 bg-neutral border-2 border-info rounded-t-none border-t-0">
                   <li>
-                    <a>
+                    <a href="https://github.com/bingKegeta/knight-link-app">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         fill="currentColor"
@@ -85,7 +85,7 @@ export default function NavBar() {
                     </a>
                   </li>
                   <li>
-                    <a>
+                    <a href="https://github.com/bingKegeta/Knight-Link">
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         fill="currentColor"
