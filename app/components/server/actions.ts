@@ -352,6 +352,33 @@ export async function GetEvents(): Promise<DbEventInputs[]> {
   }
 }
 
+export async function GetUserEvents(): Promise<DbEventInputs[]> {
+  "use server";
+  try {
+    const cookieStore = cookies();
+    const username = cookieStore.get("username");
+
+    const response = await fetch(`http://localhost:8000/v1/api/events?username=${username}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const res: EventsRes = await response.json();
+
+    if (res.status === "success") {
+      return res.data;
+    } else {
+      console.log("Failed to fetch events:", res.status);
+      return [];
+    }
+  } catch (error: any) {
+    console.error("Error fetching events:", error.message);
+    return [];
+  }
+}
+
 export async function CreateEvent(
   prevState: State | null,
   formData: FormData

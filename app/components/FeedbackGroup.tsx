@@ -32,7 +32,7 @@ export function FeedbackGroupContent({ E_name, handleStateChange }: any) {
 
   return (
     <section className="card-body bg-base-300 rounded-box join-item border-2 rounded-b-none">
-      {comments.map((item, index) => (
+      {comments?.map((item, index) => (
         <CommentCard2 data={item} key={`${item.timestamp}-${index}`} />
       ))}
     </section>

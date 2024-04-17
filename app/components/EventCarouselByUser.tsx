@@ -2,16 +2,16 @@
 import React, { useEffect, useState } from "react";
 import { DbEventInputs, EventInputs } from "../helpers/interfaces";
 import EventCard from "./EventCard";
-import { GetEvents } from "./server/actions";
+import { GetUserEvents } from "./server/actions";
 
-export function EventCarouselContent() {
+export function EventCarouselByUserContent() {
   const [events, setEvents] = useState<DbEventInputs[]>([]);
   const [isLoading, setIsLoading] = useState<Boolean>(true);
   let arr = [1,2,3,4,5,6,7,8,9,10];
 
   useEffect(() => {
     const fetchEvents = async () => {
-      const eventsList : DbEventInputs[] = await GetEvents();
+      const eventsList : DbEventInputs[] = await GetUserEvents();
       setEvents(eventsList);
       setIsLoading(!isLoading);
   };
@@ -37,10 +37,10 @@ export function EventCarouselContent() {
   )
 }
 
-export default function EventCarousel() {
+export default function EventCarouselByUser() {
   return (
     <>
-      <EventCarouselContent />
+      <EventCarouselByUserContent />
 
     </>
   );
