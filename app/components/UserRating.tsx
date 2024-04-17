@@ -4,19 +4,19 @@ import React, { useState } from "react";
 const UserRating = ({
   name,
   rating,
+  timestamp,
 }: {
   name: string;
-  rating: 1 | 2 | 3 | 4 | 5;
+  rating: number;
+  timestamp: string;
 }) => {
-  const [selectedRating, setSelectedRating] = useState<1 | 2 | 3 | 4 | 5>(
-    rating
-  );
+  const [selectedRating, setSelectedRating] = useState<number>(rating);
 
-  const handleChange = (newRating: 1 | 2 | 3 | 4 | 5) => {
+  const handleChange = (newRating: number) => {
     setSelectedRating(newRating);
   };
 
-  const uname = `${name}Rating`;
+  const uname = `${name}Rating${timestamp}`;
 
   return (
     <div className="rating" key={`rating-${name}`}>
