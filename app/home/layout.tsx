@@ -9,7 +9,7 @@ export default function MainLayout({
   return (
     <section className="h-dvh grid grid-rows-[auto_1fr] items-center justify-items-center">
       <NavBar />
-      <div>
+      <div className="z-0">
         {children}
       </div>
     </section>

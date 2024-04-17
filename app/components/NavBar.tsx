@@ -4,13 +4,50 @@ import React from "react";
 export default function NavBar() {
   return (
     <div className="border-2 border-info rounded-box my-[1%] ml-[1%] w-[98%]">
-      <div className="navbar glass rounded-box bg-neutral">
-        <div className="flex-1">
-          <Link href="/test" className="text-xl btn btn-ghost">
+      <div className="navbar glass rounded-box bg-neutral lg:justify-between justify-between">
+        <div className="flex ">
+          <Link href="/home" className="text-xl btn btn-ghost">
             Knight-Link
           </Link>
         </div>
+
+        <div className="hidden md:flex flex-none lg:justify-center lg:items-center lg:space-x-4">
+          <ul tabIndex={0} className="menu menu-horizontal px-2">
+            <li><Link href={"/home"}>Home</Link></li>
+          
+            <li>
+              <details>
+                <summary>Create</summary>
+                <ul className="p-2">
+                  <li><Link href={"/create/event"}>Event</Link></li>
+                  <li><Link href={"/create/location"}>Location</Link></li>
+                  <li><Link href={"/create/rso"}>RSO</Link></li>
+                </ul>
+              </details>
+            </li>
+
+            <li><Link href={"/events"}>My Events</Link></li>
+            <li><Link href={"/rsos"}>RSOs</Link></li>
+          </ul>
+        </div>
+
         <div className="flex-none">
+          <div className="md:hidden">
+            <div className="dropdown">
+              <div tabIndex={0} role="button" className="btn btn-ghost btn-circle">
+                <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h7" /></svg>
+              </div>
+              <ul tabIndex={0} className="menu dropdown-content mt-3 z-[1] p-2 shadow bg-base-100 rounded-box w-52">
+                <li><a href="">abc</a></li>
+                <li><a href="">abc</a></li>
+                <li><a href="">abc</a></li>
+                <li><a href="">abc</a></li>
+                <li><a href="">abc</a></li>
+                <li><a href="">abc</a></li>
+              </ul>
+            </div>
+          </div>
+          
           <ul className="menu menu-horizontal px-2 mr-8">
             <li className="mr-2">
               <details>

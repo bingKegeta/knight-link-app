@@ -7,7 +7,6 @@ import { GetUserEvents } from "./server/actions";
 export function EventCarouselByUserContent() {
   const [events, setEvents] = useState<DbEventInputs[]>([]);
   const [isLoading, setIsLoading] = useState<Boolean>(true);
-  let arr = [1,2,3,4,5,6,7,8,9,10];
 
   useEffect(() => {
     const fetchEvents = async () => {
@@ -41,7 +40,6 @@ export default function EventCarouselByUser() {
   return (
     <>
       <EventCarouselByUserContent />
-
     </>
   );
 }

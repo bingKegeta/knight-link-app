@@ -1,23 +1,44 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 import CommentForm from "./CommentForm";
 import { FD_Props } from "../helpers/interfaces";
 import FeedbackGroup from "./FeedbackGroup";
-import { getUsername } from "./server/actions";
+import { JoinEvent, State, getUsername } from "./server/actions";
 
 interface EButtonProps {
   E_name: string;
   //feedback: FD_Props
 }
 
+interface EventJoinData {
+  username: string;
+  event_name: string;
+}
+
 const EventButtons2 = ({ E_name }: EButtonProps) => {
   const contactModalId = `contact-${E_name}`;
   const commentModalId = `comment-${E_name}`;
+  const router = useRouter();
+
+  const handleSubmit = async () => {
+    const eventJoinData : EventJoinData = {
+      username: "",
+      event_name: E_name,
+    }
+
+    const res : State = await JoinEvent(eventJoinData);
+
+    // Just refresh regardless, hope for the best lmao.
+    if (res?.status !== "") {
+      router.push("/events");
+    }
+  }
 
   return (
     <>
       <div className="card-actions grid grid-cols-3 justify-between w-full">
-        <button className="btn btn-primary">Join</button>
+        <button className="btn btn-primary" onClick={async () => {await handleSubmit()}}>Join</button>
         <button
           className="btn btn-info btn-outline"
           onClick={() => {

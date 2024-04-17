@@ -73,6 +73,11 @@ interface RsoJoinData {
   rso_name: string;
 }
 
+interface EventJoinData {
+  username: string;
+  event_name: string;
+}
+
 export type State = {
   status: string;
   message: string;
@@ -300,6 +305,60 @@ export async function JoinRso(data: RsoJoinData): Promise<State> {
   }
 }
 
+export async function JoinEvent(data: EventJoinData): Promise<State> {
+  try {
+    const cookieStore = cookies();
+    const username = cookieStore.get("username");
+
+    if (username?.value !== "") {
+      data.username = username?.value || "";
+    } else {
+      return {
+        status: "error",
+        message: `You are not logged in`,
+      };
+    }
+
+    const response = await fetch("http://localhost:8000/v1/api/events/join", {
+      method: "POST",
+      body: JSON.stringify(data),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const responseText = await response.json();
+
+    let responseBody;
+
+    try {
+      responseBody = JSON.parse(responseText);
+    } catch (e) {
+      responseBody = responseText;
+    }
+
+    if (!response.ok) {
+      const errorMessage =
+        typeof responseBody === "object" ? responseBody.message : responseBody;
+      return {
+        status: "warning",
+        message: `Error joining Event: ${errorMessage}`,
+      };
+    }
+
+    return {
+      status: "success",
+      message:
+        typeof responseBody === "object" ? responseBody.message : responseBody,
+    };
+  } catch (error: any) {
+    return {
+      status: "error",
+      message: `Error joining Event: ${error.message || error}`,
+    };
+  }
+}
+
 export async function GetLocations(): Promise<Location[]> {
   "use server";
   try {
@@ -358,7 +417,7 @@ export async function GetUserEvents(): Promise<DbEventInputs[]> {
     const cookieStore = cookies();
     const username = cookieStore.get("username");
 
-    const response = await fetch(`http://localhost:8000/v1/api/events?username=${username}`, {
+    const response = await fetch(`http://localhost:8000/v1/api/events?username=${username?.value}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
