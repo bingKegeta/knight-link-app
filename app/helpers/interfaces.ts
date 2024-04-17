@@ -20,8 +20,8 @@ export interface EventInputs {
   loc_name: string;
   contact_email: string;
   visibility: string;
-  uni_name: string
-  rso_name : string
+  uni_name: string;
+  rso_name: string;
 }
 
 export interface DbEventInputs {
@@ -32,8 +32,8 @@ export interface DbEventInputs {
   loc_name: string;
   contact_email: string;
   visibility: string;
-  uni_name: string
-  rso_name : string
+  uni_name: string;
+  rso_name: string;
 }
 
 export interface FeedbackForm {
@@ -45,8 +45,8 @@ export interface FeedbackForm {
 }
 
 export interface EventDescription {
-  String: string
-  Valid: boolean
+  String: string;
+  Valid: boolean;
 }
 
 export interface LoginProps {
@@ -75,4 +75,18 @@ export interface FdProps {
   content?: string;
   rating?: 1 | 2 | 3 | 4 | 5;
   timestamp: string;
+}
+
+export interface FD_Props {
+  username: string;
+  type: "rating" | "comment";
+  feedback: string;
+  timestamp: string;
+}
+
+export interface FD_PropsInp {
+  username: string;
+  event_name: string;
+  type: "rating" | "comment";
+  feedback: string;
 }

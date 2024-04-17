@@ -1,23 +1,79 @@
 "use client";
 import React, { useState } from "react";
+import { FD_PropsInp } from "../helpers/interfaces";
 
-export default function CommentForm() {
+export default function CommentForm({
+  E_name,
+  username,
+}: {
+  E_name: string;
+  username: string | undefined;
+}) {
   const [isComment, setComment] = useState(true);
   const [rating, setRating] = useState(0);
 
-  const handleFormSubmit = (event: any) => {
+  const handleFormSubmit = async (event: any) => {
     event.preventDefault();
+
+    let data: FD_PropsInp = {
+      username: "",
+      event_name: "",
+      type: "rating",
+      feedback: "",
+    };
+
+    data.username = username ? username : "";
+    data.event_name = E_name;
 
     if (isComment) {
       const form = event.target;
       const formData = new FormData(form);
       const formJSON = Object.fromEntries(formData.entries());
-      console.log(formJSON);
+      console.log(formJSON.comment);
+      data.type = "comment";
+      data.feedback = "" + formJSON.comment;
     } else {
       console.log(rating);
+      data.type = "rating";
+      data.feedback = "" + rating;
     }
 
-    // send data here
+    const response = await fetch(
+      "http://localhost:8000/v1/api/events/feedback",
+      {
+        method: "POST",
+        headers: {
+          "content-type": "application/json",
+        },
+        body: JSON.stringify(data),
+      }
+    );
+
+    const responseText = await response.text();
+
+    let responseBody;
+
+    try {
+      responseBody = JSON.parse(responseText);
+    } catch (e) {
+      responseBody = responseText;
+    }
+
+    if (!response.ok) {
+      const errorMessage =
+        typeof responseBody === "object" ? responseBody.message : responseBody;
+
+      return {
+        status: "warning",
+        message: `Applying failed: ${errorMessage}`,
+      };
+    }
+
+    return {
+      status: "success",
+      message:
+        typeof responseBody === "object" ? responseBody.message : responseBody,
+    };
   };
 
   const handleRatingChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -93,7 +149,11 @@ export default function CommentForm() {
             className="absolute bottom-2 right-2 tooltip tooltip-primary"
             data-tip="Submit"
           >
-            <button className="btn btn-xs btn-ghost rounded-full" type="submit">
+            <button
+              className="btn btn-xs btn-ghost rounded-full"
+              type="submit"
+              onClick={handleFormSubmit}
+            >
               <svg
                 xmlns="http://www.w3.org/2000/svg"
                 fill="currentColor"

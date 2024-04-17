@@ -1,5 +1,6 @@
 "use server";
 
+import { FD_Props } from "@/app/helpers/interfaces";
 import { cookies } from "next/headers";
 
 interface StudentsRes {
@@ -18,6 +19,11 @@ interface RSOsRes {
 
 interface EventsRes {
   data: DbEventInputs[];
+  status: string;
+}
+
+interface FDRes {
+  data: FD_Props[];
   status: string;
 }
 
@@ -240,15 +246,14 @@ export async function GetRsos(): Promise<DbRso[]> {
   }
 }
 
-export async function JoinRso(data : RsoJoinData): Promise<State> {
+export async function JoinRso(data: RsoJoinData): Promise<State> {
   try {
     const cookieStore = cookies();
     const username = cookieStore.get("username");
 
     if (username?.value !== "") {
-      data.username = username?.value || ""
-    }
-    else {
+      data.username = username?.value || "";
+    } else {
       return {
         status: "error",
         message: `You are not logged in`,
@@ -259,7 +264,7 @@ export async function JoinRso(data : RsoJoinData): Promise<State> {
       method: "POST",
       body: JSON.stringify(data),
       headers: {
-        "Content-Type": "application/json"
+        "Content-Type": "application/json",
       },
     });
 
@@ -467,7 +472,70 @@ export async function CreateLocation(
   }
 }
 
-export async function CreateFeedback(
+// export async function CreateFeedback(
+//   prevState: State | null,
+//   formData: FormData
+// ): Promise<State> {
+//   "use server";
+//   try {
+//     const data: Partial<Record<string, string>> = {};
+
+//     formData.forEach((value, key) => {
+//       if (key.charAt(0) !== "$") {
+//         data[key] = value.toString();
+//       }
+//     });
+
+//     const raw = JSON.stringify({
+//       address: data["address"],
+//       latitude: data["coordinates.latitude"],
+//       longitude: data["coordinates.longitude"],
+//     });
+
+//     const response = await fetch(
+//       "http://localhost:8000/v1/api/locations/create",
+//       {
+//         method: "POST",
+//         body: raw,
+//         headers: {
+//           "Content-Type": "application/json",
+//         },
+//       }
+//     );
+
+//     const responseText = await response.text();
+
+//     let responseBody;
+
+//     try {
+//       responseBody = JSON.parse(responseText);
+//     } catch (e) {
+//       responseBody = responseText;
+//     }
+
+//     if (!response.ok) {
+//       const errorMessage =
+//         typeof responseBody === "object" ? responseBody.message : responseBody;
+//       return {
+//         status: "warning",
+//         message: `Creation failed: ${errorMessage}`,
+//       };
+//     }
+
+//     return {
+//       status: "success",
+//       message:
+//         typeof responseBody === "object" ? responseBody.message : responseBody,
+//     };
+//   } catch (error: any) {
+//     return {
+//       status: "error",
+//       message: `Creation failed: ${error.message || error}`,
+//     };
+//   }
+// }
+
+export async function CreateRso(
   prevState: State | null,
   formData: FormData
 ): Promise<State> {
@@ -481,82 +549,19 @@ export async function CreateFeedback(
       }
     });
 
-    const raw = JSON.stringify({
-      address: data["address"],
-      latitude: data["coordinates.latitude"],
-      longitude: data["coordinates.longitude"],
-    });
-
-    const response = await fetch(
-      "http://localhost:8000/v1/api/locations/create",
-      {
-        method: "POST",
-        body: raw,
-        headers: {
-          "Content-Type": "application/json",
-        },
-      }
-    );
-
-    const responseText = await response.text();
-
-    let responseBody;
-
-    try {
-      responseBody = JSON.parse(responseText);
-    } catch (e) {
-      responseBody = responseText;
-    }
-
-    if (!response.ok) {
-      const errorMessage =
-        typeof responseBody === "object" ? responseBody.message : responseBody;
-      return {
-        status: "warning",
-        message: `Creation failed: ${errorMessage}`,
-      };
-    }
-
-    return {
-      status: "success",
-      message:
-        typeof responseBody === "object" ? responseBody.message : responseBody,
-    };
-  } catch (error: any) {
-    return {
-      status: "error",
-      message: `Creation failed: ${error.message || error}`,
-    };
-  }
-}
-
-export async function CreateRso(
-  prevState: State | null,
-  formData: FormData
-): Promise<State> {
-  'use server';
-  try {
-    const data: Partial<Record<string, string>> = {};
-
-    formData.forEach((value, key) => {
-      if (key.charAt(0) !== "$") {
-        data[key] = value.toString();
-      }
-    });
-
     // the hidden input we will give it the current username from the cookie
     const cookieStore = cookies();
-    const username = cookieStore.get('username')
+    const username = cookieStore.get("username");
 
     if (username?.value === "") {
       return {
         status: "success",
-        message: "Error trying to access the cookies. Login again"
+        message: "Error trying to access the cookies. Login again",
       };
     }
 
-    data['am_name'] = username?.value;
-      
+    data["am_name"] = username?.value;
+
     const response = await fetch("http://localhost:8000/v1/api/rsos", {
       method: "POST",
       body: JSON.stringify(data),
@@ -603,13 +608,16 @@ export async function GetStudents() {
     const cookieStore = cookies();
     const auth = cookieStore.get("authToken");
 
-    const response = await fetch("http://localhost:8000/v1/api/users/get_students", {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "Bearer " + auth?.value,
-      },
-    });
+    const response = await fetch(
+      "http://localhost:8000/v1/api/users/get_students",
+      {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + auth?.value,
+        },
+      }
+    );
 
     const res: StudentsRes = await response.json();
 
@@ -623,4 +631,42 @@ export async function GetStudents() {
     console.error("Error fetching events:", error.message);
     return [];
   }
+}
+
+export async function GetFeedback(event_name: string): Promise<FD_Props[]> {
+  "use server";
+  try {
+    const response = await fetch(
+      "http://localhost:8000/v1/api/events/feedback",
+      {
+        method: "GET",
+        headers: {
+          event_name: event_name,
+        },
+      }
+    );
+
+    const res: FDRes = await response.json();
+
+    if (res.status === "success") {
+      return res.data;
+    } else {
+      console.log("Failed to fetch Feedback:", res.status);
+      return [];
+    }
+  } catch (error: any) {
+    console.error("Error fetching Feedback:", error.message);
+    return [];
+  }
+}
+
+export async function getUsername() {
+  const cookieStore = cookies();
+  const username = cookieStore.get("username");
+
+  if (username?.value === "") {
+    console.error("Error trying to access the cookies.");
+    return "";
+  }
+  return username?.value;
 }

@@ -1,4 +1,5 @@
 import { EventButtons } from "./EventButtons";
+import EventButtons2 from "./EventButtons2";
 import { DbEventInputs } from "./server/actions";
 
 export default function EventCard(event: DbEventInputs) {
@@ -133,11 +134,7 @@ export default function EventCard(event: DbEventInputs) {
             </div>
           </div>
         </div>
-        <EventButtons
-          E_name={event.event_name}
-          phone={event.phone}
-          email={event.email}
-        />
+        <EventButtons2 E_name={event.event_name} />
       </div>
     </div>
   );
