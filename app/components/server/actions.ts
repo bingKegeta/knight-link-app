@@ -359,6 +359,59 @@ export async function JoinEvent(data: EventJoinData): Promise<State> {
   }
 }
 
+export async function LeaveEvent(data: EventJoinData): Promise<State> {
+  try {
+    const cookieStore = cookies();
+    const username = cookieStore.get("username");
+
+    if (username?.value !== "") {
+      data.username = username?.value || "";
+    } else {
+      return {
+        status: "error",
+        message: `You are not logged in`,
+      };
+    }
+
+    const response = await fetch("http://localhost:8000/v1/api/events/leave", {
+      method: "PUT",
+      body: JSON.stringify(data),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const responseText = await response.json();
+
+    let responseBody;
+
+    try {
+      responseBody = JSON.parse(responseText);
+    } catch (e) {
+      responseBody = responseText;
+    }
+
+    if (!response.ok) {
+      const errorMessage =
+        typeof responseBody === "object" ? responseBody.message : responseBody;
+      return {
+        status: "warning",
+        message: `Error leaving the Event: ${errorMessage}`,
+      };
+    }
+
+    return {
+      status: "success",
+      message:
+        typeof responseBody === "object" ? responseBody.message : responseBody,
+    };
+  } catch (error: any) {
+    return {
+      status: "error",
+      message: `Error leaving the Event: ${error.message || error}`,
+    };
+  }
+}
 export async function GetLocations(): Promise<Location[]> {
   "use server";
   try {

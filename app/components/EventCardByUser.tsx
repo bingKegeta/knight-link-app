@@ -1,7 +1,7 @@
-import EventButtons2 from "./EventButtons2";
+import EventButtons from "./EventButtons";
 import { DbEventInputs } from "./server/actions";
 
-export default function EventCard(event: DbEventInputs) {
+export default function EventCardByUser(event: DbEventInputs) {
   return (
     <div className="card md:w-96 w-80 glass bg-neutral">
       <div className="card-body">
@@ -127,7 +127,7 @@ export default function EventCard(event: DbEventInputs) {
             </div>
           </div>
         </div>
-        <EventButtons2 E_name={event.event_name} />
+        <EventButtons E_name={event.event_name} />
       </div>
     </div>
   );
