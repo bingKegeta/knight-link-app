@@ -6,11 +6,7 @@ import CommentCard from "./CommentCard";
 import CommentCard2 from "./CommentCard2";
 import alertCreation from "./AlertCreation";
 
-export function FeedbackGroupContent({
-  E_name,
-  handleStateChange,
-  currentUsername,
-}: any) {
+export function FeedbackGroupContent({ E_name, handleStateChange }: any) {
   const [comments, setComments] = useState<FD_Props[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
@@ -37,11 +33,7 @@ export function FeedbackGroupContent({
   return (
     <section className="card-body bg-base-300 rounded-box join-item border-2 rounded-b-none">
       {comments.map((item, index) => (
-        <CommentCard2
-          data={item}
-          currentUsername={currentUsername}
-          key={`${item.timestamp}-${index}`}
-        />
+        <CommentCard2 data={item} key={`${item.timestamp}-${index}`} />
       ))}
     </section>
   );
@@ -49,10 +41,9 @@ export function FeedbackGroupContent({
 
 interface stupidProps {
   E_name: string;
-  currentUsername: string | undefined;
 }
 
-const FeedbackGroup = ({ E_name, currentUsername }: stupidProps) => {
+const FeedbackGroup = ({ E_name }: stupidProps) => {
   const [alert, setAlert] = useState<{
     visible: boolean;
     content: React.JSX.Element | null;

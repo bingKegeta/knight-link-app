@@ -14,16 +14,6 @@ const EventButtons2 = ({ E_name }: EButtonProps) => {
   const contactModalId = `contact-${E_name}`;
   const commentModalId = `comment-${E_name}`;
 
-  const [username, setUsername] = useState<string>();
-
-  useEffect(() => {
-    const usernamer = async () => {
-      let tmp = await getUsername();
-      setUsername(tmp);
-    };
-    usernamer();
-  }, []);
-
   return (
     <>
       <div className="card-actions grid grid-cols-3 justify-between w-full">
@@ -101,9 +91,9 @@ const EventButtons2 = ({ E_name }: EButtonProps) => {
             </button>
           </form>
           <h3 className="font font-bold text-lg m-4">Comments for {E_name}</h3>
-          <FeedbackGroup E_name={E_name} currentUsername={username} />
+          <FeedbackGroup E_name={E_name} />
           <section className="join-item">
-            <CommentForm E_name={E_name} username={username} />
+            <CommentForm E_name={E_name} />
           </section>
         </div>
       </dialog>
