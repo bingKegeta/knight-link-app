@@ -1,11 +1,10 @@
 import React from "react";
-import LoginPrompt from "../components/LoginPrompt";
+import Link from "next/link";
+import LoginForm from "../components/LoginForm";
 
 const LoginPage = () => {
   return (
-    <div className="p-8">
-      <LoginPrompt />
-    </div>
+    <LoginForm />
   );
 };
 

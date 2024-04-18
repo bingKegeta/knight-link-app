@@ -1,11 +1,10 @@
-import React from "react";
-import RegisterPrompt from "../components/RegisterPrompt";
+import React, { useState } from "react";
+import Link from "next/link";
+import RegisterForm from "../components/RegisterForm";
 
 const RegisterPage = () => {
   return (
-    <div className="p-4">
-      <RegisterPrompt />
-    </div>
+    <RegisterForm />
   );
 };
 
