@@ -27,7 +27,7 @@ const libraries : Libraries = ['places']
 export default function PlacesAutocomplete(props: PlacesProps) {
   
   const { isLoaded } = useLoadScript({
-    googleMapsApiKey: "AIzaSyBuiX3L2SndSrb71JlU29Of8Zo_r6u3PpQ",
+    googleMapsApiKey: "",
     libraries,
   });
 
