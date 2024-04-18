@@ -291,7 +291,7 @@ export function CreateEventFormContent({
                     <option disabled>
                         Location
                     </option>
-                    {locations.map((loc, index) => (
+                    {locations?.map((loc, index) => (
                         <option className="text-wrap" key={index} value={loc.address}>{loc.address}</option>
                     ))}
                 </select>

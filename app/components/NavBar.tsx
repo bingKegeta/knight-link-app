@@ -37,7 +37,8 @@ export default function NavBar() {
             </li>
 
             <li><Link href={"/events"}>My Events</Link></li>
-            <li><Link href={"/rsos"}>RSOs</Link></li>
+            <li><Link href={"/rsos"}>All RSOs</Link></li>
+            <li><Link href={"/rsosuser"}>User RSOs</Link></li>
           </ul>
         </div>
 

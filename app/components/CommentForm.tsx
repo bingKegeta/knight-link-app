@@ -1,16 +1,20 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { FD_PropsInp } from "../helpers/interfaces";
+import { getUsername } from "./server/actions";
 
-export default function CommentForm({
-  E_name,
-  username,
-}: {
-  E_name: string;
-  username: string | undefined;
-}) {
+export default function CommentForm({ E_name }: { E_name: string }) {
   const [isComment, setComment] = useState(true);
   const [rating, setRating] = useState(0);
+  const [currentUsername, setUsername] = useState<string>();
+
+  useEffect(() => {
+    const usernamer = async () => {
+      let tmp = await getUsername();
+      setUsername(tmp);
+    };
+    usernamer();
+  }, []);
 
   const handleFormSubmit = async (event: any) => {
     event.preventDefault();
@@ -22,7 +26,7 @@ export default function CommentForm({
       feedback: "",
     };
 
-    data.username = username ? username : "";
+    data.username = currentUsername ? currentUsername : "";
     data.event_name = E_name;
 
     if (isComment) {
@@ -68,12 +72,8 @@ export default function CommentForm({
         message: `Applying failed: ${errorMessage}`,
       };
     }
-
-    return {
-      status: "success",
-      message:
-        typeof responseBody === "object" ? responseBody.message : responseBody,
-    };
+    
+    location.reload();
   };
 
   const handleRatingChange = (event: React.ChangeEvent<HTMLInputElement>) => {

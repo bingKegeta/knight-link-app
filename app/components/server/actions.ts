@@ -256,6 +256,33 @@ export async function GetRsos(): Promise<DbRso[]> {
   }
 }
 
+export async function GetUserRsos(): Promise<DbRso[]> {
+  
+  "use server";
+  try {
+    const cookieStore = cookies();
+    const username = cookieStore.get("username")?.value;
+
+    const response = await fetch(`http://localhost:8000/v1/api/rsos/user?username=${username}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const res: RSOsRes = await response.json();
+
+    if (res.status === "success") {
+      return res.data;
+    } else {
+      console.log("Failed to fetch RSOs:", res.status);
+      return [];
+    }
+  } catch (error: any) {
+    console.error("Error fetching RSOs:", error.message);
+    return [];
+  }
+}
 export async function JoinRso(data: RsoJoinData): Promise<State> {
   try {
     const cookieStore = cookies();
@@ -310,6 +337,60 @@ export async function JoinRso(data: RsoJoinData): Promise<State> {
   }
 }
 
+export async function LeaveRso(data: RsoJoinData): Promise<State> {
+  try {
+    const cookieStore = cookies();
+    const username = cookieStore.get("username");
+
+    if (username?.value !== "") {
+      data.username = username?.value || "";
+    } else {
+      return {
+        status: "error",
+        message: `You are not logged in`,
+      };
+    }
+
+    const response = await fetch("http://localhost:8000/v1/api/rsos/leave", {
+      method: "PUT",
+      body: JSON.stringify(data),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const responseText = await response.json();
+
+    let responseBody;
+
+    try {
+      responseBody = JSON.parse(responseText);
+    } catch (e) {
+      responseBody = responseText;
+    }
+
+    if (!response.ok) {
+      const errorMessage =
+        typeof responseBody === "object" ? responseBody.message : responseBody;
+      return {
+        status: "warning",
+        message: `Error leaving the RSO: ${errorMessage}`,
+      };
+    }
+
+    return {
+      status: "success",
+      message:
+        typeof responseBody === "object" ? responseBody.message : responseBody,
+    };
+  } catch (error: any) {
+    return {
+      status: "error",
+      message: `Error leaving the RSO: ${error.message || error}`,
+    };
+  }
+
+}
 export async function JoinEvent(data: EventJoinData): Promise<State> {
   try {
     const cookieStore = cookies();

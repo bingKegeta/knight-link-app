@@ -10,11 +10,7 @@ export default function EventCard(event: DbEventInputs) {
           <a
             className="tooltip tooltip-primary tooltip-right"
             data-tip={
-              event.visibility === "private"
-                ? event.uni_name
-                : event.visibility === "rso"
-                ? event.rso_name
-                : "public"
+              event.visibility === "private" ? event.uni_name : event.visibility == "rso_event" ? event.rso_name : "public"
             }
           >
             <span className="badge badge-accent badge-info">
