@@ -561,7 +561,7 @@ export async function CheckPermissions(): Promise<string> {
 export async function GetEvents(): Promise<DbEventInputs[]> {
   "use server";
   try {
-    const cookieStore = cookies();
+    const cookieStore =   cookies();
 
     const username = cookieStore.get("username");
     const response = await fetch(`http://localhost:8000/v1/api/events?username=${username?.value}`, {
